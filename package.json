@@ -1,16 +1,33 @@
 {
-  "name": "ls",
+  "name": "screen-share-app",
   "version": "1.0.0",
-  "description": "这个项目使用node，express框架进行转发，可以通过主机加5555端口号访问到一个浏览器界面，这个界面可以是实现实时查看服务端的屏幕。",
-  "main": "index.js",
+  "description": "屏幕共享和截图工具",
+  "main": "electron/main.js",
   "scripts": {
-    "dev": "node index.js"
+    "start": "electron .",
+    "build": "electron-builder",
+    "dev": "nodemon --exec electron ."
   },
-  "author": "",
-  "license": "ISC",
+  "build": {
+    "appId": "com.screen.share",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
+  },
   "dependencies": {
     "express": "^4.21.2",
     "screenshot-desktop": "^1.15.1",
     "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "nodemon": "^3.0.2"
   }
 }
