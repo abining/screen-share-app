@@ -45,13 +45,11 @@
 
 npm install
 
-
 node server.js
 
 或者
 
 npm run dev
-
 
 ## 使用方法：
 
@@ -62,3 +60,126 @@ npm run dev
 查看端：浏览器输入电脑ip+端口号5555。例如我的ip是 `192.168.0.22`，那么就在浏览器输入 `192.168.0.22:5555`
 
 交互很人性，很易懂就不多说了。
+
+## 运行项目可能遇到的问题
+
+## 打包错误的解决方案
+
+
+让我们一个个解决这些问题：
+
+1. Windows 打包失败问题：
+   首先修改 package.json，添加更详细的构建配置：
+
+```json:package.json
+{
+  "name": "screen-share-app",
+  "version": "1.0.0",
+  "description": "屏幕共享和截图工具",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "dev": "nodemon --exec electron ."
+  },
+  "build": {
+    "appId": "com.screen.share",
+    "productName": "Screen Share",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "unicode": true
+    }
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "screenshot-desktop": "^1.15.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "nodemon": "^3.0.2"
+  }
+}
+```
+
+
+1. 如果还是遇到打包问题，可以尝试以下步骤：
+
+```bash
+# 1. 清理项目
+rm -rf node_modules
+rm -rf dist
+rm package-lock.json
+
+# 2. 安装依赖
+npm install --force
+
+# 3. 如果还有问题，可以全局安装 electron-builder
+npm install -g electron-builder
+
+# 4. 然后再次尝试打包
+npm run build
+```
+
+3. 如果打包时出现具体错误，可以添加详细日志：
+
+```json:package.json
+{
+  "scripts": {
+    "build": "electron-builder --win -c.extraMetadata.main=electron/main.js --debug"
+  }
+}
+```
+
+4. 确保项目结构正确：
+
+```
+your-app/
+├── build/
+│   └── icon.ico
+├── electron/
+│   └── main.js
+├── public/
+│   ├── index.html
+│   ├── client.js
+│   └── shear-pic-with-area.js
+├── package.json
+└── node_modules/
+```
+
+1. 如果还遇到问题，可以尝试在 package.json 中添加：
+
+```json:package.json
+{
+  "build": {
+    // ... 其他配置 ...
+    "asar": false,  // 禁用 asar 打包
+    "win": {
+      // ... 其他配置 ...
+      "publisherName": "YourName"
+    }
+  }
+}
+```
+
+这些修改应该能解决 Windows 下的打包和乱码问题。如果还有具体错误，请提供错误信息，我可以帮你进一步解决。

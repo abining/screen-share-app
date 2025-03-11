@@ -1,3 +1,9 @@
+if (process.platform === 'win32') {
+    process.env.LANG = 'zh_CN.UTF-8';
+    // 设置命令行编码
+    require('child_process').execSync('chcp 65001');
+}
+
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const express = require('express');
@@ -15,7 +21,7 @@ expressApp.use(express.static(path.join(__dirname, '../public')));
 
 // WebSocket 处理
 io.on('connection', (socket) => {
-    console.log('客户端已连接');
+    console.log('Client connected');
     let screenInterval;
 
     socket.on('start-stream', () => {
@@ -25,13 +31,13 @@ io.on('connection', (socket) => {
                 const base64Image = screenshot_data.toString('base64');
                 socket.emit('screen-data', base64Image);
             } catch (err) {
-                console.error('截图错误:', err);
+                console.error('Screenshot error:', err);
             }
         }, 500);
     });
 
     socket.on('disconnect', () => {
-        console.log('客户端断开连接');
+        console.log('Client disconnected');
         if (screenInterval) {
             clearInterval(screenInterval);
         }
@@ -41,7 +47,7 @@ io.on('connection', (socket) => {
 // 启动服务器
 const PORT = 5555;
 httpServer.listen(PORT, () => {
-    console.log(`服务器运行在 http://localhost:${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
 });
 
 function createWindow() {
