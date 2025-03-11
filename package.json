@@ -26,7 +26,8 @@
           "target": "nsis",
           "arch": ["x64"]
         }
-      ]
+      ],
+      "icon": "build/logo.png"
     },
     "mac": {
       "target": ["dmg", "zip"],
