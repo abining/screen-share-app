@@ -1,0 +1,44 @@
+    name: Release
+
+# 当 master 分支被 push,就会触发
+on:
+  push:
+    branches: [master]
+# 权限
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packags: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 签出代码
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: 安装 nodejs
+        uses: actions/setup-node@v2.5.2
+        with:
+          node-version: "20.8.1" # node 版本
+
+      - name: 构建 dist # 构建，根据自己的仓库构建命令来
+        run: |
+          npm install -g pnpm@latest-8
+          pnpm install
+          pnpm run build
+
+      - name: 发布 npm 包
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.PUBLISH_NPM_TOKEN }}
+        run: |
+          npm cache clean --force
+          npx semantic-release
+
