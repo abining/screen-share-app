@@ -40,9 +40,44 @@
         <button id="startBtn">开始观看</button>
         <button id="cropBtn">裁剪下载</button>
     </div>
+
+    <!-- 添加屏幕信息和控制面板 -->
+    <div id="info-panel" style="margin: 20px 0; text-align: left; width: 100%; max-width: 800px;">
+        <div id="screen-info" style="margin-bottom: 10px;">
+            屏幕尺寸：<span id="screen-size">0 x 0</span> 像素
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+            <div>
+                <label>左边距：</label>
+                <input type="number" id="left-pos" style="width: 80px;">
+            </div>
+            <div>
+                <label>右边距：</label>
+                <input type="number" id="right-pos" style="width: 80px;">
+            </div>
+            <div>
+                <label>上边距：</label>
+                <input type="number" id="top-pos" style="width: 80px;">
+            </div>
+            <div>
+                <label>下边距：</label>
+                <input type="number" id="bottom-pos" style="width: 80px;">
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button id="moveUp">↑ 上移</button><br>
+            <button id="moveLeft">← 左移</button>
+            <button id="moveRight">右移 →</button><br>
+            <button id="moveDown">↓ 下移</button>
+        </div>
+    </div>
+
     <canvas id="screen"></canvas>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/client.js"></script>
+    <script src="/shear-pic-with-area.js"></script>
 </body>
 </html>

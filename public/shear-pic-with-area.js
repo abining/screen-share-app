@@ -3,14 +3,76 @@ let isDrawing = false;
 let selectionBox = {
     x: 100,
     y: 100,
-    width: 200,
-    height: 150
+    width: 800,
+    height: 800
 };
 let dragHandle = null;
 const handleSize = 8;
 
+// 添加移动步长常量
+const MOVE_STEP = 10;
+
+// 更新选区位置输入框的值
+function updatePositionInputs() {
+    document.getElementById('left-pos').value = Math.round(selectionBox.x);
+    document.getElementById('top-pos').value = Math.round(selectionBox.y);
+    document.getElementById('right-pos').value = Math.round(selectionBox.x + selectionBox.width);
+    document.getElementById('bottom-pos').value = Math.round(selectionBox.y + selectionBox.height);
+}
+
+// 从输入框更新选区位置
+function updateSelectionFromInputs() {
+    const left = parseInt(document.getElementById('left-pos').value) || 0;
+    const top = parseInt(document.getElementById('top-pos').value) || 0;
+    const right = parseInt(document.getElementById('right-pos').value) || 0;
+    const bottom = parseInt(document.getElementById('bottom-pos').value) || 0;
+
+    selectionBox.x = left;
+    selectionBox.y = top;
+    selectionBox.width = right - left;
+    selectionBox.height = bottom - top;
+}
+
+// 移动选区
+function moveSelection(direction) {
+    switch(direction) {
+        case 'up':
+            selectionBox.y -= MOVE_STEP;
+            break;
+        case 'down':
+            selectionBox.y += MOVE_STEP;
+            break;
+        case 'left':
+            selectionBox.x -= MOVE_STEP;
+            break;
+        case 'right':
+            selectionBox.x += MOVE_STEP;
+            break;
+    }
+    updatePositionInputs();
+}
+
 // 初始化选区
 function initSelection(canvas, ctx) {
+    // 添加移动按钮事件监听
+    document.getElementById('moveUp').addEventListener('click', () => moveSelection('up'));
+    document.getElementById('moveDown').addEventListener('click', () => moveSelection('down'));
+    document.getElementById('moveLeft').addEventListener('click', () => moveSelection('left'));
+    document.getElementById('moveRight').addEventListener('click', () => moveSelection('right'));
+
+    // 添加输入框事件监听
+    ['left-pos', 'top-pos', 'right-pos', 'bottom-pos'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+            updateSelectionFromInputs();
+        });
+    });
+
+    // 更新屏幕尺寸信息
+    function updateScreenInfo() {
+        document.getElementById('screen-size').textContent = 
+            `${canvas.width} x ${canvas.height}`;
+    }
+
     // 绘制选区
     function drawSelectionBox() {
         ctx.strokeStyle = '#00ff00';
@@ -30,6 +92,11 @@ function initSelection(canvas, ctx) {
             ctx.fillRect(handle.x - handleSize/2, handle.y - handleSize/2, handleSize, handleSize);
             ctx.strokeRect(handle.x - handleSize/2, handle.y - handleSize/2, handleSize, handleSize);
         });
+
+        // 更新位置输入框
+        updatePositionInputs();
+        // 更新屏幕信息
+        updateScreenInfo();
     }
 
     // 判断鼠标是否在手柄上
@@ -125,7 +192,7 @@ function cropAndDownload(canvas) {
     
     // 创建下载链接
     const link = document.createElement('a');
-    link.download = 'cropped-screenshot.png';
+    link.download = `cropped-screenshot-${new Date().getTime()}.png`;
     link.href = tempCanvas.toDataURL();
     link.click();
 }

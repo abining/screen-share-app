@@ -4,7 +4,7 @@
   "description": "这个项目使用node，express框架进行转发，可以通过主机加5555端口号访问到一个浏览器界面，这个界面可以是实现实时查看服务端的屏幕。",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node index.js"
   },
   "author": "",
   "license": "ISC",
